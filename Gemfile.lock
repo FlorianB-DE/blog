@@ -12,7 +12,7 @@ GEM
     ffi (1.15.5)
     forwardable-extended (2.6.0)
     google-protobuf (3.22.2-aarch64-linux)
-    http_parser.rb (0.8.0)
+    http_parser.rb (0.6.0)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
     jekyll (4.3.2)
@@ -70,6 +70,7 @@ GEM
 
 PLATFORMS
   aarch64-linux
+  aarch64-linux-gnu
 
 DEPENDENCIES
   http_parser.rb (~> 0.6.0)
@@ -81,4 +82,4 @@ DEPENDENCIES
   wdm (~> 0.1.1)
 
 BUNDLED WITH
-   2.4.10
+   2.4.6
