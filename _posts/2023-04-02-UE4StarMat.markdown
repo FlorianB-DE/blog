@@ -1,0 +1,128 @@
+---
+layout: post
+title:  "A Star in UE4 - The Material"
+date:   2023-04-03 21:28:13 +0000
+categories: A Star in Unreal Engine 4
+---
+
+Table of contents
+* Will be replaced with the ToC, excluding the "Contents" header
+{:toc}
+
+# Introduction
+
+Hi everyone.
+
+Today is the first post of a series on 'how to create a "realistic" star in Unreal Engine 4'. \\
+I'm using [UE 4.27.2](https://docs.unrealengine.com/4.27/en-US/) for those wondering. 
+
+
+First of all a little disclaimer:\\
+*I do not claim that my this variant is THE best or THE most optimized but it works quite well :)*
+
+# Todays goal
+
+<video width="100%" preload="auto" autoplay muted loop>
+    <source src="/assets/videos/star_rotating.webm" type="video/webm"/>
+</video>
+
+# Base configuration
+
+So first we need a new material. I called it 'M_Star' for Unreals naming convention.
+
+In the material settings under the 'Material'-group I set the 'Material Domain' to be 'Surface' and then 'Blend Mode' to 'Opaque'.\\
+'Decal Blend Mode' then locks in to 'Translucent' and it set the 'Shading Model' to 'Unlit'. 
+
+After all that your material should look like this:
+![starting material](/assets/images/001/starting_material.webp)
+
+
+Then we need a 'VectorParameter'. You can use a constant color as well but I have my plans for the future, watch out for the next post ;)
+
+For a typical star/sun color we can set its default value to be 1.0, 0.75, 0.0, 1.0 .
+
+If you now plug in the first (RGBA) output of the 'Param'-node into 'Emissive Color' we see...\\
+a yellow dot.
+
+But bare with me now. If we add a multiply-node (right click -> multiply) and set its A or B param to 1000, you can see a far better interpretation.
+
+# Sunspots
+The one thing I don't like is repetition so therefore I'm gonna use *a lot* of noise to simulate sunspots.\\
+Most people tend to use a texture but I'd like to have a lot more "uniqueness". 
+
+For the sunspots themselves I used a total of three different Noise-nodes: 
+- Simplex
+- Gradient
+- Voronoi
+
+The first two are used to create the small little 'dots' and the last one perfectly depicts the large spots.
+
+Create those nodes by right click -> noise and on the left side set 'Function' to the corresponding noise-function.
+
+**First**: Click on the Simplex-Noise and set its scale to 2.0, the Levels to 1 and 'Output Min' to 0.0\\
+**Second**: Add the first two noises together and multiply them by 10. Why? We will get there in a minute...\\
+**Third**: Multiply that result with the Voronoi node which has set its scale to 0.025, its turbulence off (false), and its output min to 0.0 .\\
+**Last** but not least: clamp the result to (Min=0)(Max=1) (default settings)
+
+To get a preview of the noise texture we can plug it into our emissive color output and watch the magic happen. Isn't it beautiful?
+
+![noise preview](/assets/images/001/noise_preview.webp)
+
+If we now multiply that with out yellow color and apply out 1000 times scaling afterwards, it will look resonably good but there is a catch! Do you notice the flickering?
+
+## Rotation
+
+Let us first care about our spots having a bit of movement an then care about the flickering. 
+
+All we have to do is a simple panning on our texture coordinates and we are good to go, right?\\
+Sadly no but that's the core idea. \\
+Two Problems: 
+- If we were to do that our sphere would have a section where one side of the texture doesn't fit to the other
+- and second: the noise-node wants a 3D Vector and we only provided it with two dimensions.
+
+The second problem has an easy fix: just append something as z-coordinate to your vector. In my case I used DeltaTime but use whatever you feel like.
+
+Well to get a seemless transition we can get the 'Absolute World Position' and use that as a starter-position for every pixel. Simply add said node to the above described structure and et voila. We have a rotating and changeing star.
+
+![panning](/assets/images/001/panning.webp)
+
+## the flickering
+
+Getting rid of the flickering turned out to be a more challening task then I first expected. The basic idea is to only show the spots on close inspection. For sure we may just add 1 to our noise texture when we are far enough away and then clamp it to get rid of every noise BUT that would be hideous wouldn't it?
+
+Instead we can compute a function where the distance to the oject gives us a value between 0 and 1 to add to our texture to lighten it. A possibility would be a linear interpolation where we need to define a fixed distance from our object.\\
+I went for a exponential function instead so we have a large window where we can see the spots and have a smooth but quick transition to the 'uniform/non-flickering' star.
+
+I think I'm gonna rush through this since nobody wants to read math. GO!
+
+- start with the distance between 'Camera Position' and 'Object Position'
+- subtract 1.5x 'Object Radius' from it
+- eliminate negatives (Max-node with B as 0.0)
+- use it as an exponent to the base 1.001 ('Power'-node)
+- subtract one and clamp it between 0 and 1
+- add it to the noise texture after the clamp
+
+Puh. Enough math for today.
+
+Here is the final calculation:
+![panning](/assets/images/001/distance_function.webp)
+
+<details>
+  <summary>Math alert! Graph ahead...</summary>
+  <p>For all you math nerds ;p</p>
+  <img src="/assets/images/001/distance_function_graph.webp" alt="distance function graph" loading="lazy" >
+</details>
+
+
+# Increasing brightness
+
+Now if we go back to our material, we can only see the sunspots from close up and it's quite a challange to move that close since at 1000x emission scaling, it really singes my eyes. 
+
+What we can do now is scale out brightness with distance from the camera. Conveniently we have this value just sittin arround, so to say.
+
+When we now put the value after we eliminated all negative values, max it with 100 and then multiply it with out base texure, we get a beautiful scaling brightness where we can zoom in to reveal the beautiful movement of the sun with big and small sunspots. 
+
+Next time we'll focus on the actual lighting of the scene and changing the color of the star, based on its mass. Until then, have fun enjoying the sun!
+
+Final material:
+![panning](/assets/images/001/final_material.webp)
