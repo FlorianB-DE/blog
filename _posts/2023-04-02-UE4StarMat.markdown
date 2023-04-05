@@ -13,12 +13,12 @@ Table of contents
 
 Hi everyone.
 
-Today is the first post of a series on 'how to create a "realistic" star in Unreal Engine 4'. \\
+This is the first post of a series on 'how to create a "realistic" star in Unreal Engine 4'. \\
 I'm using [UE 4.27.2](https://docs.unrealengine.com/4.27/en-US/) for those wondering. 
 
 
 First, a little disclaimer:\\
-*I do not claim that my this variant is THE best or THE most optimized but it works quite well :)*
+*I do not claim that my variant is THE best or THE most optimized but it works quite well :)*
 
 # Today's goal
 
@@ -44,7 +44,7 @@ For a typical star/sun color we can set its default value to be 1.0, 0.75, 0.0, 
 If you now plug in the first (RGBA) output of the 'Param' node into 'Emissive Color' we see...\\
 a yellow dot.
 
-But bare with me now. If we add a multiply node (right click -> multiply) and set its A or B param to 1000, you can see a far better interpretation.
+But bare with me, if we add a multiply node (right click -> multiply) and set its A or B param to 1000, you can see a far better interpretation.
 
 # Sunspots
 The one thing I don't like is repetition so therefore I am going to use *a lot* of noise to simulate sunspots.\\
@@ -60,7 +60,7 @@ The first two are used to create the small little 'dots', and the last one perfe
 Create those nodes by right-clicking -> noise and on the left side, set 'Function' to the corresponding noise function. Then:
 
 **First**: Click on the Simplex-Noise and set its scale to 2.0, the Levels to 1 and 'Output Min' to 0.0\\
-**Second**: Add the first two noises together and multiply them by 10. Why? We will get there in a minute...\\
+**Second**: Add the first two noises together and multiply them by 10. Why? It's a surprise tool that can help us later...\\
 **Third**: Multiply that result with the Voronoi node which has set its scale to 0.025, its turbulence off (false), and its output min to 0.0 .\\
 **Last** but not least: clamp the result to (Min=0)(Max=1) (default settings)
 
@@ -72,23 +72,23 @@ If we now multiply that with out yellow color and apply out 1000 times scaling a
 
 ## Rotation
 
-Let us first care about our spots having a bit of movement an then care about the flickering. 
+Let us first give the spots a bit of movement an then address the flickering. 
 
 All we have to do is a simple panning on our texture coordinates, and we are good to go, right?\\
 Sadly, no, but that's the core idea. \\
 Two Problems: 
-- If we were to do that, our sphere would have a section where one side of the texture doesn't fit to the other
-- and second: the noise-node wants a 3D Vector and we only provided it with two dimensions.
+- If we were to do that, the edges of the texture would not blend seemlessly
+- and second: the noise-node requires a 3D Vector and we only provided it with two dimensions.
 
 The second problem has an easy fix: just append something as z-coordinate to your vector. In my case I used DeltaTime but use whatever you feel like.
 
-Well to get a seemless transition we can get the 'Absolute World Position' and use that as a starter-position for every pixel. Simply add said node to the above described structure and et voila. We have a rotating and changeing star.
+Well, to get a seemless transition we can get the 'Absolute World Position' and use that as a starter-position for every pixel. Simply add that node to the structure described above et voila. We have a rotating and changing star.
 
 ![panning](/assets/images/001/panning.webp)
 
-## the flickering
+## The flickering
 
-Getting rid of the flickering turned out to be a more challening task then I first expected. The basic idea is to only show the spots on close inspection. Of course, we could just add 1 to our noise texture when we are far enough away and then clamp it to get rid of every noise, but that would be hideous, wouldn't it?
+Getting rid of the flickering turned out to be a more challenging task then I had anticipated. The basic idea is to only show the spots on closer inspection. Of course, we could just add 1 to our noise texture when we are far enough away and then clamp it to get rid of all the noise, but that would be hideous!
 
 Instead, we can compute a function where the distance to the oject gives us a value between 0 and 1 to add to our texture to lighten it. A possibility would be a linear interpolation where we need to define a fixed distance from our object.\\
 I went for a exponential function instead so we have a large window where we can see the spots and have a smooth but quick transition to the 'uniform/non-flickering' star.
