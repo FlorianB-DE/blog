@@ -16,7 +16,7 @@ The idea was to learn by doing, to gain hands-on experience with the foundations
 
 ## What We Built
 
-![starting material](/assets/images/002/random_dungeon.webp)
+![random dungeon](/assets/images/002/random_dungeon.webp)
 
 The result was **Homeland Shelter**, a dungeon-style roguelike that brings together several core gameplay systems we implemented ourselves:
 
@@ -28,7 +28,7 @@ The result was **Homeland Shelter**, a dungeon-style roguelike that brings toget
 
 Everything you see in the project was created without the aid of external libraries or engines — a deliberate choice that forced us to really understand the low-level mechanics behind games and engines.
 
-![starting material](/assets/images/002/items_and_enemies.webp)
+![items and enemies](/assets/images/002/items_and_enemies.webp)
 
 In this picture you can see some changes to the starting position.
 First up, the tall grass is "breakable" and loot can be generated via a loottable.
@@ -39,8 +39,8 @@ The fire is a placeholder texture for GIF-based animations.
 Changing the metadata file for the items, the texture is easily swapable and collectable. Collected items can be access via an inventory.
 <div style="display: grid;">
   <div style="display: flex; gap: 1rem; margin: auto;">
-    <img src="/assets/images/002/sword.webp" height="200px">
-    <img src="/assets/images/002/inventory.webp" height="200px">
+    <img src="/assets/images/002/sword.webp" alt="image of sword on the ground" height="200px">
+    <img src="/assets/images/002/inventory.webp" alt="image of inventory" height="200px">
   </div>
 </div>
 
