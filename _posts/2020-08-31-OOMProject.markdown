@@ -17,7 +17,7 @@ This project is an academic exploration of how object-oriented modeling and UML 
 
 The primary aim of this project was to translate UML-driven concepts into a compact, engine-like prototype. Rather than remaining purely theoretical, the outcome was designed to be a playable sandbox that demonstrates movement, interaction, simple item usage, basic collision handling, smooth camera following, and the ability to save and load game state. In this way, the project connects abstract modeling with a tangible implementation that highlights how design decisions shape the player’s experience.
 
-## What I Built (Conceptually)
+## What I Built
 
 ![generated world](/assets/images/003/generated_world.webp)
 
