@@ -66,3 +66,6 @@ This project purposefully concentrates on conceptual clarity rather than breadth
 ## Closing Thoughts
 
 This project showcases the path from disciplined modeling to a concise, working engine slice. It’s intentionally scoped to highlight architectural judgment, composability, and player-facing feel—qualities that I hope to transfer to professional software and game development environments.
+
+## Check out the source code
+[On GitHub](https://github.com/FlorianB-DE/OOM-Project-Game)
