@@ -41,7 +41,7 @@ The official results page also lists:
  Challenge: Model Checking  
  Team: Robert Jürgensen, Julian Keller, Sophie Lipkaya, Maximilian Sternal  
 
-- **3rd Place — Bonsai**  
+- **3rd Place — Bonsai BIM**  
  Challenge: Software Integration  
  Team: Bernd Gmeiner, Dr. Volker Krieger, Matthias Weise  
 
